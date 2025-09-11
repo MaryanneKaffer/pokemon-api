@@ -19,6 +19,7 @@ export type Pokemon = {
         front_default: string;
     };
     color?: string;
+    characteristic?: string;
 };
 
 export async function GET(req: Request) {
@@ -28,21 +29,54 @@ export async function GET(req: Request) {
 
     try {
         if (name) {
-            const res = await fetch(`${BASE_URL}/pokemon/${name}`);
-            const data = await res.json();
-            const speciesRes = await fetch(`${BASE_URL}/pokemon-species/${data.id}`);
-            const speciesData = await speciesRes.json();
+            const listRes = await fetch(`${BASE_URL}/pokemon?limit=1025`);
+            const listData = await listRes.json();
 
-            return NextResponse.json({
-                ...data,
-                color: speciesData.color.name,
-            });
+            const filtered = listData.results.filter((p: any) =>
+                p.name.includes(name.toLowerCase())
+            );
+
+            const detailed = await Promise.all(
+                filtered.map(async (p: any) => {
+                    const pokeRes = await fetch(p.url);
+                    const pokeData = await pokeRes.json();
+
+                    const speciesRes = await fetch(
+                        `${BASE_URL}/pokemon-species/${pokeData.id}`
+                    );
+                    const speciesData = await speciesRes.json();
+
+                    let characteristic: string | undefined;
+                    try {
+                        const charRes = await fetch(`${BASE_URL}/characteristic/${pokeData.id}`);
+                        if (charRes.ok) {
+                            const charData = await charRes.json();
+                            const desc = charData.descriptions.find(
+                                (d: any) => d.language.name === "en"
+                            );
+                            characteristic = desc?.description;
+                        }
+                    } catch {
+                        characteristic = undefined;
+                    }
+
+                    return {
+                        id: pokeData.id,
+                        name: pokeData.name,
+                        types: pokeData.types,
+                        sprites: pokeData.sprites,
+                        color: speciesData.color.name,
+                        characteristic,
+                    };
+                })
+            );
+
+            return NextResponse.json(detailed);
         }
 
         if (limit) {
             const res = await fetch(`${BASE_URL}/pokemon?limit=${limit}`);
             const data = await res.json();
-
             const detailed = await Promise.all(
                 data.results.map(async (p: any) => {
                     const pokeRes = await fetch(p.url);
@@ -50,6 +84,19 @@ export async function GET(req: Request) {
                     const speciesRes = await fetch(
                         `${BASE_URL}/pokemon-species/${pokeData.id}`
                     );
+                    let characteristic: string | undefined;
+                    try {
+                        const charRes = await fetch(`${BASE_URL}/characteristic/${pokeData.id}`);
+                        if (charRes.ok) {
+                            const charData = await charRes.json();
+                            const desc = charData.descriptions.find(
+                                (d: any) => d.language.name === "en"
+                            );
+                            characteristic = desc?.description;
+                        }
+                    } catch {
+                        characteristic = undefined;
+                    }
                     const speciesData = await speciesRes.json();
                     return {
                         id: pokeData.id,
@@ -58,6 +105,7 @@ export async function GET(req: Request) {
                         types: pokeData.types,
                         sprites: pokeData.sprites,
                         color: speciesData.color.name,
+                        characteristic,
                     };
                 })
             );

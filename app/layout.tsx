@@ -6,6 +6,7 @@ import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
+import BackgroundImage from "@/components/background";
 
 export const metadata: Metadata = {
   title: {
@@ -35,12 +36,13 @@ export default function RootLayout({
       <head />
       <body
         className={clsx(
-          "min-h-screen text-foreground bg-background font-sans antialiased",
+          "min-h-screen text-foreground font-sans antialiased",
           fontSans.variable,
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <main className="pt-16 px-22">
+          <BackgroundImage />
+          <main className="min-h-screen pt-16 px-20 bg-center bg-cover">
             {children}
           </main>
         </Providers>
