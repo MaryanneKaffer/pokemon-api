@@ -3,10 +3,11 @@
 import { ThemeSwitch } from "@/components/theme-switch";
 import { useEffect, useState } from "react";
 import { Pokemon } from "./api/pokemon/route";
-import { Card, Button, Input } from "@heroui/react";
+import { Card } from "@heroui/card";
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
 import { colorMap } from "@/components/cardColorMap";
 import { SearchIcon } from "@/components/icons";
-import BackgroundImage from "@/components/background";
 
 export default function Home() {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
