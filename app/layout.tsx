@@ -4,18 +4,17 @@ import clsx from "clsx";
 
 import { Providers } from "./providers";
 
-import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
 import BackgroundImage from "@/components/background";
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
-    template: `%s - ${siteConfig.name}`,
+    default: "PokéApi",
+    template: "%s - PokéApi",
   },
-  description: siteConfig.description,
+  description: "Consuming pokemon API",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
   },
 };
 

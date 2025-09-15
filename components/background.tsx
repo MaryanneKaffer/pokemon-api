@@ -1,11 +1,14 @@
 "use client"
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function BackgroundImage() {
     const { theme } = useTheme();
+    const [bgSrc, setBgSrc] = useState("");
 
-    const bgSrc =
-        theme === "dark" ? "/bg/darkBg.jpg" : "/bg/lightBg.png";
+    useEffect(() => (
+        theme === "dark" ? setBgSrc("/bg/darkBg.jpg") : setBgSrc("/bg/lightBg.png")
+    ))
 
     return (
         <img
