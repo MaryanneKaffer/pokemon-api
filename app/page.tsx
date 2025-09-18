@@ -11,11 +11,12 @@ import Loader from "@/components/loader";
 import { TbPokeball } from "react-icons/tb";
 import { Button } from "@heroui/button";
 import InfoPainel from "@/components/infoPainel";
+import getTypeIconUrl from "@/components/typesImgs";
 
 export default function Home() {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(false);
-  const [openInfo, setOpenInfo] = useState(Number);
+  const [openInfo, setOpenInfo] = useState("");
 
   async function fetchPokemons(limit: number = 48) {
     setLoading(true);
@@ -52,12 +53,7 @@ export default function Home() {
       setLoading(false);
     }
   }
-
-  function getTypeIconUrl(typeUrl: string) {
-    const id = typeUrl.split("/").filter(Boolean).pop();
-    return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/types/generation-ix/scarlet-violet/${id}.png`;
-  }
-
+  
   useEffect(() => {
     fetchPokemons();
   }, []);
@@ -89,7 +85,7 @@ export default function Home() {
           {pokemons.length > 0 ? pokemons.map((poke, i) => (
             <Card key={poke.name + i} className={`flex w-[200px] h-[230px] items-center p-5 group text-center hover:scale-105 bg-gradient-to-b 
           ${colorMap[poke.color ?? ""] || "from-gray-400"} via-default to-default`}>
-              <Button className="group-hover:opacity-100 opacity-0 bg-transparent absolute right-2 top-2 transition-all min-w-[45px] p-0 text-white" startContent={<TbPokeball size={26} />} onPress={() => setOpenInfo(poke.id)} />
+              <Button className="group-hover:opacity-100 opacity-0 bg-transparent absolute right-2 top-2 transition-all min-w-[45px] p-0 text-white" startContent={<TbPokeball size={26} />} onPress={() => setOpenInfo(poke.name)} />
               <img className="size-[106px]" src={poke.sprites?.front_default} alt={poke.name} />
               <p className="capitalize">{poke.name} <span className="text-gray-500">#{poke.id}</span></p>
               <p className="text-sm">{poke.characteristic}</p>
@@ -101,7 +97,7 @@ export default function Home() {
             : !loading && <p className="mt-5">Nothing found...</p>}
         </div>
       </div>
-      {openInfo ? <InfoPainel id={openInfo} /> : ""}
+      {openInfo ? <InfoPainel name={openInfo} /> : ""}
     </section>
   );
 }
