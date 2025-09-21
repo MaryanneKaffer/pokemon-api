@@ -24,7 +24,9 @@ export type Pokemon = {
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const name = searchParams.get("name");
-    const limit = searchParams.get("limit");
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const limit = parseInt(searchParams.get("limit") || "48", 10);
+    const offset = (page - 1) * limit;
 
     async function safeJson(res: Response) {
         try {
@@ -99,7 +101,7 @@ export async function GET(req: Request) {
         }
 
         if (limit) {
-            const res = await fetch(`${BASE_URL}/pokemon?limit=${limit}`);
+            const res = await fetch(`${BASE_URL}/pokemon?limit=${limit}&offset=${offset}`);
             const data = await res.json();
             const detailed = await Promise.all(
                 data.results.map(async (p: any) => {
@@ -133,7 +135,10 @@ export async function GET(req: Request) {
                 })
             );
 
-            return NextResponse.json(detailed);
+            return NextResponse.json({
+                results: detailed,
+                count: data.count,
+            });
         }
 
         return NextResponse.json({ error: "Missing params" }, { status: 400 });
