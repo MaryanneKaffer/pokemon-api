@@ -81,8 +81,8 @@ export default function Home() {
 
 
   return (
-    <section className="flex justify-center gap-2 transition-all">
-      <div className={`flex flex-col ${openInfo ? "w-fit" : "w-full"} gap-4`}>
+    <section className="flex justify-center gap-5 transition-all w-full">
+      <div className={`flex flex-col ${openInfo ? "w-fit" : "w-full"} gap-4 overflow-hidden`}>
         <div className={`flex gap-2 w-full pr-3`}>
           <Input className="w-full" isClearable placeholder="Type to search..." size="lg" radius="lg" startContent={<SearchIcon />}
             onClear={() => { fetchPokemons(); }}
@@ -99,16 +99,16 @@ export default function Home() {
           <ThemeSwitch />
         </div>
         {loading && <Loader />}
-        <div className="flex flex-wrap gap-2 w-full gap-4.5 ">
+        <div className="flex flex-wrap w-full lg:gap-4.5 justify-between gap-y-5 lg:px-1.5">
           {!loading && pokemons.length > 0 ? pokemons.map((poke, i) => (
-            <Card key={poke.name + i} className={`flex w-[200px] h-[230px] items-center p-5 group text-center hover:scale-105 bg-gradient-to-b 
+            <Card key={poke.name + i} className={`flex lg:w-[200px] lg:h-[230px] md:w-[170px] w-[40dvw] h-[200px] items-center lg:p-5 px-3 py-5 group text-center hover:scale-105 bg-gradient-to-b 
           ${colorMap[poke.color ?? ""] || "from-gray-400"} via-default to-default`}>
               <Button className="group-hover:opacity-100 opacity-0 bg-transparent absolute right-2 top-2 transition-all min-w-[45px] p-0 text-white" startContent={<TbPokeball size={26} />} onPress={() => setOpenInfo(poke.name)} />
-              <img className="size-[106px]" src={poke.sprites?.front_default} alt={poke.name} />
-              <p className="capitalize">{poke.name} <span className="text-gray-500">#{poke.id}</span></p>
-              <p className="text-sm">{poke.characteristic}</p>
-              <span className="flex gap-1 mt-auto">{poke.types.map((t) => (
-                <img key={t.slot} className="h-4" src={getTypeIconUrl(t.type.url)} alt={t.type.name} title={t.type.name} />
+              <img className="lg:size-[106px] size-[90px]" src={poke.sprites?.front_default} alt={poke.name} />
+              <p className="capitalize lg:text-md text-sm lg:leading-normal leading-[14px] lg:mb-0 mb-2">{poke.name} <span className="text-gray-500">#{poke.id}</span></p>
+              <p className="lg:text-sm text-[0.75rem] lg:leading-normal leading-[12px]">{poke.characteristic}</p>
+              <span className="flex lg:gap-1 gap-0.5 mt-auto">{poke.types.map((t) => (
+                <img key={t.slot} className="lg:h-4 h-3" src={getTypeIconUrl(t.type.url)} alt={t.type.name} title={t.type.name} />
               ))}</span>
             </Card>
           ))
@@ -119,14 +119,15 @@ export default function Home() {
           page={page}
           onChange={(newPage) => { setPage(newPage); setOpenInfo("") }} />)}
       </div>
-      <AnimatePresence>
+      <AnimatePresence >
         {!loading && openInfo && (
-          <motion.div className="h-[600px] w-[580px] sticky top-10" key="info-panel"
+          <motion.div className="lg:h-[600px] lg:w-[580px] z-10 h-[70%] w-[100dvw] lg:sticky lg:top-10 fixed bottom-0 z-10" key="info-panel"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
+            <div className="bg-black opacity-50 w-screen h-screen fixed top-0 -z-10 lg:hidden" />
             <InfoPainel name={openInfo} setOpenInfo={setOpenInfo} />
           </motion.div>
         )}

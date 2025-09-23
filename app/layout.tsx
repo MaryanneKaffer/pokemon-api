@@ -41,7 +41,7 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <BackgroundImage />
-          <main className="min-h-screen py-16 px-15 bg-center bg-cover">
+          <main className="min-h-screen lg:py-16 lg:px-15 py-12 px-8 bg-center bg-cover">
             {children}
           </main>
         </Providers>
